@@ -39,19 +39,22 @@ def problem23(limit):
             abudant.append(i)
     
     ans = 0
-    for i in range(1,limit,2):
-        found = False
-        for a in abudant:
-            for b in abudant:
-                if a+b == i:
-                    found = True
-                    break
-                elif a+b > i:
-                    break
-        if found == False:
-            ans = ans + i
+
+    sums = set()
+    for a in abudant:
+        print(a)
+        for b in abudant:
+            if a+b < limit:
+                sums.add(a+b)
+            else:
+                break
+    
+    for i in range(1,limit):
+        if i not in sums:
             print(i)
+            ans = ans + i
+    
     return ans
 
 
-print(problem23(28123))
+print(problem23(28124))
