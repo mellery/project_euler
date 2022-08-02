@@ -43,3 +43,6 @@ def is_prime(n):
 
 def triangle(n):
     return sum([i for i in range(1,n+1)])
+
+def get_digit(number, n):
+    return number // 10**n % 10
