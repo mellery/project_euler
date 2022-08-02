@@ -26,6 +26,15 @@ def factors(n):
     return set(reduce(list.__add__, 
         ([i, n//i] for i in range(1, int(n**0.5) + 1) if n % i == 0)))
 
+def prime_factors(n):
+    temp = set(reduce(list.__add__,([i, n//i] for i in range(1, int(n**0.5) + 1) if n % i == 0)))
+    factors = set()
+    for t in temp:
+        if is_prime(t) == True:
+            factors.add(t)
+    return factors
+    
+
 def is_prime(n):
     prime_flag = 0
   
