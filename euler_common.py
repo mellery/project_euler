@@ -40,3 +40,6 @@ def is_prime(n):
             return False
     else:
         return False
+
+def triangle(n):
+    return sum([i for i in range(1,n+1)])
