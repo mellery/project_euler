@@ -1,6 +1,3 @@
-from cv2 import cornerSubPix
-
-
 def problem28(size):
     edge = 1
     corners = 0
