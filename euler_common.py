@@ -1,5 +1,6 @@
 from math import sqrt
 from functools import reduce
+from functools import cache
 
 def eratosthenes(n):
     m = n+1
@@ -35,6 +36,7 @@ def prime_factors(n):
     return factors
     
 
+@cache
 def is_prime(n):
     prime_flag = 0
   
