@@ -1,5 +1,5 @@
 from fractions import Fraction
-from unittest import result
+
 temp = 1
 sub = 1/2
 p = 1
