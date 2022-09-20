@@ -23,6 +23,17 @@ def gcd(a, b):
 def lcm(a, b):
     return a*b/gcd(a, b)
 
+def hcf(a, b):
+    while(b):
+        a, b = b, a % b
+    return a
+
+def phi(n):
+    p = n
+    for factor in prime_factors(n):
+        p -= p // factor
+    return p
+
 def factors(n):    
     return set(reduce(list.__add__, 
         ([i, n//i] for i in range(1, int(n**0.5) + 1) if n % i == 0)))
