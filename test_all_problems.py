@@ -5,7 +5,7 @@ import glob
 import re
 import time
 
-# Expected answers for Project Euler problems 1-78
+# Expected answers for Project Euler problems 1-80
 EXPECTED_ANSWERS = {
     1: "233168",
     2: "4613732", 
@@ -84,7 +84,9 @@ EXPECTED_ANSWERS = {
     75: "161667",
     76: "190569291",
     77: "71",
-    78: "55374"
+    78: "55374",
+    79: "73162890",
+    80: "40886"
 }
 
 def get_problem_files():
