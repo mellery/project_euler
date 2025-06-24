@@ -91,48 +91,53 @@ all_lists.append(oct_list)
 
 #print(all_lists)
 
-ans = dict()
+solutions = []
 
 for perm in itertools.permutations(all_lists):
-
     for t in perm[0]:
         head1 = int(str(t)[:2])
         tail = int(str(t)[-2:])
         
         for s in perm[1]:
             head = int(str(s)[:2])
-            if head == tail:
+            if head == tail and s != t:  # Ensure no duplicate numbers
                 tail = int(str(s)[-2:])
                 
                 for p in perm[2]:
                     head = int(str(p)[:2])
-                    if head == tail:
+                    if head == tail and p not in [t, s]:
                         tail = int(str(p)[-2:])
 
                         for h in perm[3]:
                             head = int(str(h)[:2])
-                            if head == tail:
+                            if head == tail and h not in [t, s, p]:
                                 tail = int(str(h)[-2:])
 
                                 for h2 in perm[4]:
                                     head = int(str(h2)[:2])
-                                    if head == tail:
+                                    if head == tail and h2 not in [t, s, p, h]:
                                         tail = int(str(h2)[-2:])
-                                        #print(t,s,p,h,h2)
 
                                         for o in perm[5]:
                                             head = int(str(o)[:2])
-                                            if head == tail:
+                                            if head == tail and o not in [t, s, p, h, h2]:
                                                 tail = int(str(o)[-2:])
                                                 if head1 == tail:
-                                                    temp = sum([t,s,p,h,h2,o])
-                                                    if temp in ans:
-                                                        ans[temp] = ans[temp] + 1
-                                                    else:
-                                                        ans[temp] = 1
-                                                    print(t,s,p,h,h2,o, temp)
-print(ans)
+                                                    # Found a valid cycle - check if all numbers are distinct
+                                                    cycle_nums = [t, s, p, h, h2, o]
+                                                    if len(set(cycle_nums)) == 6:  # All numbers are unique
+                                                        solutions.append((cycle_nums, sum(cycle_nums)))
 
-for k,v in ans.items():
-    if v == 6:
-        print(k)
+# Find all unique sums
+if solutions:
+    sums = [sol[1] for sol in solutions]
+    # Count frequency of each sum
+    sum_counts = {}
+    for s in sums:
+        sum_counts[s] = sum_counts.get(s, 0) + 1
+    
+    # Find the sum that appears exactly 6 times (one for each permutation of the same cycle)
+    for sum_val, count in sum_counts.items():
+        if count == 6:
+            print(sum_val)
+            break

@@ -49,20 +49,15 @@ def chakravala(N):
 def is_square(i: int) -> bool:
     return i == math.isqrt(i) ** 2
 
-def diophantine(d):
-    y = 1
-    while 1:
-        x = math.sqrt(1+d*y*y)
-        if x.is_integer():
-            print(f"D={d},y={y},x={x}")
-            return x
-        y = y + 1
 
-ans = 0
+max_x = 0
 d_ans = 0
 
-for d in range(2,1000):
-    if is_square(d) == False:
-        print(d, chakravala(d))
+for d in range(2, 1001):
+    if not is_square(d):
+        x, y = chakravala(d)
+        if x > max_x:
+            max_x = x
+            d_ans = d
 
-print(d_ans,ans)
+print(d_ans)

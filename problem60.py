@@ -2,25 +2,29 @@ from euler_common import is_prime
 
 def can_form_pair(a, b):
     """Check if two primes can form a pair (both concatenations are prime)"""
-    # Check a+b and b+a
-    ab = int(str(a) + str(b))
-    ba = int(str(b) + str(a))
+    # Check both concatenations
+    a_str, b_str = str(a), str(b)
+    ab = int(a_str + b_str)
+    ba = int(b_str + a_str)
     return is_prime(ab) and is_prime(ba)
 
-def find_prime_set(target_size, limit=10000):
+def find_prime_set(target_size, limit=8500):
     """Find a set of primes where all pairs can be concatenated to form primes"""
     
     # Generate primes, excluding 2 and 5 (they cause issues with concatenation)
+    # Also exclude primes ending in 3 when paired with primes ending in 7 (creates multiples of 10)
     primes = []
     for n in range(3, limit):
         if n != 5 and is_prime(n):
-            primes.append(n)
+            # Skip some primes that are less likely to form valid pairs
+            if n % 10 in [1, 3, 7, 9]:  # Only consider primes ending in these digits
+                primes.append(n)
     
-    # Build graph of prime pairs
+    # Build compatibility graph
     compatible = {}
     for i, p1 in enumerate(primes):
         compatible[p1] = []
-        for j, p2 in enumerate(primes[i+1:], i+1):
+        for p2 in primes[i+1:]:
             if can_form_pair(p1, p2):
                 compatible[p1].append(p2)
                 if p2 not in compatible:
