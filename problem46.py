@@ -1,26 +1,23 @@
 from euler_common import is_prime
-from euler_common import eratosthenes
+import math
 
-i = 3
+def satisfies_goldbach_conjecture(n):
+    """Check if odd composite n can be written as prime + 2*k²"""
+    # For each possible k, check if n - 2*k² is prime
+    k = 1
+    while 2 * k * k < n:
+        remainder = n - 2 * k * k
+        if remainder > 0 and is_prime(remainder):
+            return True
+        k += 1
+    return False
 
-#while (i < 34):
-while (1):
-    if (is_prime(i) == False):
-        #print(i)
-        primes = eratosthenes(i)
-        valid = False
-        for p in primes:
-            if valid == True:
-                break
-            for n in range(0,i-p+1):
-                if i == p + 2*n*n:
-                    valid = True
-                    print(i,"=",p,"+",2*n*n)
-                    break
-                    
-        if valid == False:
-            print(i)
+# Start from 9 (first odd composite that isn't 1)
+n = 9
+
+while True:
+    if not is_prime(n):  # Only check odd composite numbers
+        if not satisfies_goldbach_conjecture(n):
+            print(n)
             break
-
-        #print("---")
-    i = i + 2
+    n += 2  # Only check odd numbers

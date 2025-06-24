@@ -15,7 +15,6 @@ def problem26(limit):
                 digits.append(digit)
             else:
                 break
-        print(d,'=',len(digits))
         if len(digits) > ans:
             ans = len(digits)
             ans_d = d

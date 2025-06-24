@@ -1,17 +1,28 @@
 from euler_common import eratosthenes
 
-#primes = eratosthenes(1000)
-primes = eratosthenes(1000000)
-print("primes")
-ans = 0
-ans_len = 0
-for x in range(0,len(primes)):
-    for y in range(x,len(primes)):
-        if (sum(primes[x:y])) > max(primes):
+limit = 1000000
+primes = eratosthenes(limit)
+prime_set = set(primes)  # O(1) lookup instead of O(n)
+
+max_length = 0
+result_prime = 0
+
+# For each starting position
+for start in range(len(primes)):
+    current_sum = 0
+    
+    # Build consecutive sum starting from 'start'
+    for end in range(start, len(primes)):
+        current_sum += primes[end]
+        
+        # If sum exceeds limit, no point continuing
+        if current_sum >= limit:
             break
-        if sum(primes[x:y]) in primes:
-            if y-x > ans_len:
-                ans_len = y-x
-                ans = sum(primes[x:y])
-            #print(sum(primes[x:y]),y-x)
-print(ans,ans_len)
+            
+        # If we have a longer sequence and the sum is prime
+        sequence_length = end - start + 1
+        if sequence_length > max_length and current_sum in prime_set:
+            max_length = sequence_length
+            result_prime = current_sum
+
+print(result_prime)
