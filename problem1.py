@@ -1,6 +1,3 @@
-from multiprocessing.connection import answer_challenge
-
-
 def problem1(input):
     ans = 0
     for i in range(1,input):
