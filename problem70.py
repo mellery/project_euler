@@ -1,19 +1,4 @@
-from euler_common import eratosthenes
-
-def phi_sieve(limit):
-    """Compute phi(n) for all n up to limit using sieve method"""
-    phi = list(range(limit + 1))  # Initialize phi[i] = i
-    
-    for i in range(2, limit + 1):
-        if phi[i] == i:  # i is prime
-            for j in range(i, limit + 1, i):
-                phi[j] -= phi[j] // i
-    
-    return phi
-
-def is_permutation(a, b):
-    """Check if two numbers are permutations of each other"""
-    return sorted(str(a)) == sorted(str(b))
+from euler_common import eratosthenes, phi_sieve, is_permutation
 
 def solve_problem70():
     """Find n < 10^7 where n/phi(n) is minimized and n and phi(n) are permutations"""

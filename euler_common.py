@@ -23,10 +23,8 @@ def gcd(a, b):
 def lcm(a, b):
     return a*b//gcd(a, b)
 
-def hcf(a, b):
-    while(b):
-        a, b = b, a % b
-    return a
+# hcf is an alias for gcd
+hcf = gcd
 
 def phi(n):
     p = n
@@ -68,3 +66,32 @@ def triangle(n):
 
 def get_digit(number, n):
     return number // 10**n % 10
+
+def phi_sieve(limit):
+    """Compute phi(n) for all n up to limit using sieve method"""
+    phi = list(range(limit + 1))  # Initialize phi[i] = i
+    
+    for i in range(2, limit + 1):
+        if phi[i] == i:  # i is prime
+            for j in range(i, limit + 1, i):
+                phi[j] -= phi[j] // i
+    
+    return phi
+
+def is_palindrome(s):
+    """Check if a string or number is a palindrome"""
+    s = str(s)
+    return s == s[::-1]
+
+def is_permutation(a, b):
+    """Check if two numbers are permutations of each other"""
+    return sorted(str(a)) == sorted(str(b))
+
+def is_perfect_square(n):
+    """Check if n is a perfect square"""
+    root = int(n**0.5)
+    return root * root == n
+
+def digit_sum(n):
+    """Calculate the sum of digits in a number"""
+    return sum(int(digit) for digit in str(n))

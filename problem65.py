@@ -1,3 +1,5 @@
+from euler_common import digit_sum
+
 e = [2,]
 i = 1
 
@@ -12,4 +14,4 @@ denominator = e.pop()
 for i in e[::-1]:
     denominator, numerator =  (denominator * i + numerator, denominator)
 
-print(sum([int(digit) for digit in str(denominator)]))
+print(digit_sum(denominator))

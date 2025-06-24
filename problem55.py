@@ -1,7 +1,4 @@
-def is_palindrome(n):
-    if str(n) == str(n)[::-1]:
-        return True
-    return False
+from euler_common import is_palindrome
 
 def reverse_and_add(a):
     return a + int(str(a)[::-1])

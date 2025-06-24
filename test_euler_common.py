@@ -86,6 +86,58 @@ class TestEulerCommon(unittest.TestCase):
         self.assertEqual(get_digit(12345, 5), 0)
         self.assertEqual(get_digit(7, 0), 7)
         self.assertEqual(get_digit(7, 1), 0)
+    
+    def test_phi_sieve(self):
+        result = phi_sieve(10)
+        expected = [0, 1, 1, 2, 2, 4, 2, 6, 4, 6, 4]
+        self.assertEqual(result, expected)
+        
+        small_result = phi_sieve(5)
+        expected_small = [0, 1, 1, 2, 2, 4]
+        self.assertEqual(small_result, expected_small)
+    
+    def test_is_palindrome(self):
+        self.assertTrue(is_palindrome(121))
+        self.assertTrue(is_palindrome(1221))
+        self.assertTrue(is_palindrome(1))
+        self.assertTrue(is_palindrome("racecar"))
+        self.assertTrue(is_palindrome("12321"))
+        
+        self.assertFalse(is_palindrome(123))
+        self.assertFalse(is_palindrome(1234))
+        self.assertFalse(is_palindrome("hello"))
+    
+    def test_is_permutation(self):
+        self.assertTrue(is_permutation(123, 321))
+        self.assertTrue(is_permutation(1234, 4321))
+        self.assertTrue(is_permutation(125874, 874521))
+        self.assertTrue(is_permutation(11, 11))
+        
+        self.assertFalse(is_permutation(123, 124))
+        self.assertFalse(is_permutation(123, 1234))
+        self.assertFalse(is_permutation(111, 112))
+    
+    def test_is_perfect_square(self):
+        self.assertTrue(is_perfect_square(1))
+        self.assertTrue(is_perfect_square(4))
+        self.assertTrue(is_perfect_square(9))
+        self.assertTrue(is_perfect_square(16))
+        self.assertTrue(is_perfect_square(25))
+        self.assertTrue(is_perfect_square(100))
+        
+        self.assertFalse(is_perfect_square(2))
+        self.assertFalse(is_perfect_square(3))
+        self.assertFalse(is_perfect_square(5))
+        self.assertFalse(is_perfect_square(15))
+        self.assertFalse(is_perfect_square(99))
+    
+    def test_digit_sum(self):
+        self.assertEqual(digit_sum(123), 6)
+        self.assertEqual(digit_sum(1234), 10)
+        self.assertEqual(digit_sum(999), 27)
+        self.assertEqual(digit_sum(1), 1)
+        self.assertEqual(digit_sum(0), 0)
+        self.assertEqual(digit_sum(505), 10)
 
 if __name__ == '__main__':
     unittest.main()

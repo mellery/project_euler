@@ -1,13 +1,4 @@
-def phi_sieve(limit):
-    """Compute phi(n) for all n up to limit using sieve method"""
-    phi = list(range(limit + 1))  # Initialize phi[i] = i
-    
-    for i in range(2, limit + 1):
-        if phi[i] == i:  # i is prime
-            for j in range(i, limit + 1, i):
-                phi[j] -= phi[j] // i
-    
-    return phi
+from euler_common import phi_sieve
 
 def solve_problem72():
     """Count proper fractions with denominator ≤ 1,000,000"""

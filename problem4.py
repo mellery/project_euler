@@ -4,15 +4,16 @@
 
 #Find the largest palindrome made from the product of two 3-digit numbers.
 
+from euler_common import is_palindrome
+
 def problem4(limit):
     ans = 0
     for i in range(0,limit):
         for j in range(0,limit):
-            a = str(i*j)
-            b = a[::-1]
-            if (a == b):
-                if i*j > ans:
-                    ans = i*j
+            product = i*j
+            if is_palindrome(product):
+                if product > ans:
+                    ans = product
     return ans
 
 #print(problem4(100))

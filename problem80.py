@@ -13,12 +13,7 @@ of the first one hundred decimal digits for all the irrational square roots.
 """
 
 from decimal import Decimal, getcontext
-import math
-
-def is_perfect_square(n):
-    """Check if n is a perfect square"""
-    root = int(math.sqrt(n))
-    return root * root == n
+from euler_common import is_perfect_square, digit_sum
 
 def get_square_root_digits(n, precision=100):
     """
@@ -65,8 +60,7 @@ def solve_problem80():
             digits = get_square_root_digits(n, 100)
             
             # Sum the digits
-            digit_sum = sum(int(digit) for digit in digits)
-            total_sum += digit_sum
+            total_sum += digit_sum(int(digits))
     
     return total_sum
 
