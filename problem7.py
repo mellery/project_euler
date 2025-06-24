@@ -2,13 +2,18 @@
 
 #What is the 10,001st prime number?
 
-from euler_common import eratosthenes
+from euler_common import is_prime
 
 def problem7(limit):
-    primes = eratosthenes(limit*limit)
-    print(len(primes))
-    if len(primes) >= limit:
-        return(primes[limit-1])
+    count = 0
+    num = 2
+    while count < limit:
+        if is_prime(num):
+            count += 1
+            if count == limit:
+                return num
+        num += 1
+    return None
 
 #print(problem7(6))
 print(problem7(10001))

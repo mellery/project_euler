@@ -23,4 +23,4 @@ def problem22(input):
 
     
     
-print(problem22('input\p022_names.txt'))
+print(problem22('./input/p022_names.txt'))

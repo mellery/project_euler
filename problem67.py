@@ -23,4 +23,4 @@ def problem67(input):
 
     return rows[0][0]
 
-print(problem67("input/problem67.txt"))
+print(problem67("./input/problem67.txt"))

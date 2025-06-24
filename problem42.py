@@ -34,4 +34,4 @@ def problem42(input):
 
     
     
-print(problem42('input\p042_words.txt'))
+print(problem42('./input/p042_words.txt'))

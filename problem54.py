@@ -131,4 +131,4 @@ def problem54(input):
 
     return ans
 
-print(problem54('input\p054_poker.txt'))
+print(problem54('./input/p054_poker.txt'))

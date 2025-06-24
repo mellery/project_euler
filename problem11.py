@@ -43,5 +43,5 @@ def problem11(input, n):
 
     return max_product
 
-input = "input\problem11.txt"
+input = "./input/problem11.txt"
 print(problem11(input, 4))

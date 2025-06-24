@@ -21,7 +21,7 @@ def gcd(a, b):
     return a
 
 def lcm(a, b):
-    return a*b/gcd(a, b)
+    return a*b//gcd(a, b)
 
 def hcf(a, b):
     while(b):

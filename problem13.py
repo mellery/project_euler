@@ -9,4 +9,4 @@ def problem13(input):
         values.append(int(l.strip()))
     return(str(sum(values))[0:10])
 
-print(problem13("input/problem13.txt"))
+print(problem13("./input/problem13.txt"))

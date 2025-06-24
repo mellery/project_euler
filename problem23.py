@@ -10,51 +10,44 @@
 #Find the sum of all the positive integers which cannot be written as the sum of two abundant numbers.
 
 def sum_proper_divisors(n):
-    divisors = []
-    for i in range(1,n):
-        if n%i==0:
-            divisors.append(i)
-    return(sum(divisors))
+    if n <= 1:
+        return 0
+    divisor_sum = 1  # 1 is always a proper divisor
+    i = 2
+    while i * i <= n:
+        if n % i == 0:
+            divisor_sum += i
+            if i != n // i:  # Avoid counting the square root twice
+                divisor_sum += n // i
+        i += 1
+    return divisor_sum
 
-def is_deficient(n):
-    if sum_proper_divisors(n) < n:
-        return True
-    return False
-
-def is_abunant(n):
-    if sum_proper_divisors(n) > n:
-        return True
-    return False
-
-def is_perfect(n):
-    if sum_proper_divisors(n) == n:
-        return True
-    return False
+def is_abundant(n):
+    return sum_proper_divisors(n) > n
 
 def problem23(limit):
-    abudant = []
+    # Find all abundant numbers up to limit
+    abundant = []
+    for i in range(12, limit):  # Start from 12 as it's the smallest abundant number
+        if is_abundant(i):
+            abundant.append(i)
     
-    for i in range(1,limit):
-        if is_abunant(i):
-            abudant.append(i)
+    # Mark all numbers that can be written as sum of two abundant numbers
+    can_be_sum = [False] * limit
     
-    ans = 0
-
-    sums = set()
-    for a in abudant:
-        print(a)
-        for b in abudant:
-            if a+b < limit:
-                sums.add(a+b)
-            else:
+    for i, a in enumerate(abundant):
+        for j in range(i, len(abundant)):
+            b = abundant[j]
+            if a + b >= limit:
                 break
+            can_be_sum[a + b] = True
     
-    for i in range(1,limit):
-        if i not in sums:
-            print(i)
-            ans = ans + i
+    # Sum all numbers that cannot be written as sum of two abundant numbers
+    total = 0
+    for i in range(1, limit):
+        if not can_be_sum[i]:
+            total += i
     
-    return ans
-
+    return total
 
 print(problem23(28124))
