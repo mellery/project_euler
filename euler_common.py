@@ -95,3 +95,17 @@ def is_perfect_square(n):
 def digit_sum(n):
     """Calculate the sum of digits in a number"""
     return sum(int(digit) for digit in str(n))
+
+def load_matrix(filename):
+    """Load a comma-separated matrix from a text file."""
+    try:
+        with open(filename, 'r') as f:
+            matrix = []
+            for line in f:
+                row = list(map(int, line.strip().split(',')))
+                matrix.append(row)
+        return matrix
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Input file '{filename}' not found")
+    except ValueError as e:
+        raise ValueError(f"Error parsing matrix data: {e}")
