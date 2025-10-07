@@ -33,13 +33,18 @@ Statistically it can be shown that the three most popular squares, in order, are
 If, instead of using two 6-sided dice, two 4-sided dice are used, find the six-digit modal string.
 '''
 
-import random
-from collections import Counter
+"""Deterministic Markov chain solver for Project Euler 84 with 4-sided dice.
+
+We build a Markov chain on states (position, consecutive_doubles_count)
+and compute the stationary distribution by iterating the probability vector.
+Community Chest and Chance cards are modeled as random draws (uniform over
+the 16 cards) as is standard for this problem.
+"""
+
+from math import isclose
+
 
 NUM_SQUARES = 40
-NUM_TURNS = 10**8  # Increase for better accuracy
-
-# Define board positions for CC, CH, R, U, G2J, JAIL, etc.
 CC = [2, 17, 33]
 CH = [7, 22, 36]
 R = [5, 15, 25, 35]
@@ -47,73 +52,135 @@ U = [12, 28]
 G2J = 30
 JAIL = 10
 
-# Define CC and CH cards as lists of moves (see problem description)
-CC_CARDS = [0, JAIL] + [None]*14
-CH_CARDS = [0, JAIL, 11, 24, 39, 5, 'R', 'R', 'U', -3] + [None]*6
+
+def next_r(pos):
+    for r in R:
+        if r > pos:
+            return r
+    return R[0]
 
 
-def roll_dice():
-    return random.randint(1, 4), random.randint(1, 4)
+def next_u(pos):
+    for u in U:
+        if u > pos:
+            return u
+    return U[0]
 
 
-def simulate():
-    visits = Counter()
-    pos = 0
-    cc_index = 0
-    ch_index = 0
-    doubles_count = 0
+def process_cc(pos):
+    # returns dict of resulting positions -> probability
+    # CC has 16 cards: 1->GO, 1->JAIL, 14->no move
+    return {0: 1/16, JAIL: 1/16, pos: 14/16}
 
-    cc_deck = CC_CARDS[:]
-    ch_deck = CH_CARDS[:]
-    random.shuffle(cc_deck)
-    random.shuffle(ch_deck)
 
-    for _ in range(NUM_TURNS):
-        d1, d2 = roll_dice()
-        if d1 == d2:
-            doubles_count += 1
-        else:
-            doubles_count = 0
+def process_ch(pos):
+    # CH has 16 cards with the movement cards as described
+    res = {}
+    def add(p, prob):
+        res[p] = res.get(p, 0) + prob
 
-        if doubles_count == 3:
-            pos = JAIL
-            doubles_count = 0
-            visits[pos] += 1
+    # movement cards (10 of 16)
+    add(0, 1/16)      # GO
+    add(JAIL, 1/16)   # JAIL
+    add(11, 1/16)     # C1
+    add(24, 1/16)     # E3
+    add(39, 1/16)     # H2
+    add(5, 1/16)      # R1
+    add(next_r(pos), 2/16)  # next R (two cards)
+    add(next_u(pos), 1/16)  # next U
+    # Go back 3 squares
+    back = (pos - 3) % NUM_SQUARES
+    # if back lands on CC, process CC
+    if back in CC:
+        cc_map = process_cc(back)
+        for k, v in cc_map.items():
+            add(k, v * 1/16)
+    else:
+        add(back, 1/16)
+    # remaining 6 cards: no move
+    add(pos, 6/16)
+    return res
+
+
+def build_transition():
+    # states indexed by s = pos*3 + dc (dc in 0,1,2)
+    N = NUM_SQUARES * 3
+    P = [[0.0] * N for _ in range(N)]
+
+    # iterate states
+    for pos in range(NUM_SQUARES):
+        for dc in range(3):
+            s = pos * 3 + dc
+            # iterate over dice outcomes (1..4, 1..4)
+            for d1 in range(1, 5):
+                for d2 in range(1, 5):
+                    prob = 1/16
+                    if d1 == d2:
+                        ndc = dc + 1
+                    else:
+                        ndc = 0
+
+                    if ndc == 3:
+                        # go to jail, reset doubles
+                        ns = JAIL * 3 + 0
+                        P[s][ns] += prob
+                        continue
+
+                    newpos = (pos + d1 + d2) % NUM_SQUARES
+                    # process square effects
+                    mapping = {newpos: 1.0}
+                    if newpos == G2J:
+                        mapping = {JAIL: 1.0}
+                    elif newpos in CC:
+                        mapping = process_cc(newpos)
+                    elif newpos in CH:
+                        mapping = process_ch(newpos)
+
+                    # for each possible resulting square, add transition
+                    for final_pos, p2 in mapping.items():
+                        ns = final_pos * 3 + ndc
+                        P[s][ns] += prob * p2
+
+    return P
+
+
+def multiply(vec, P):
+    N = len(vec)
+    res = [0.0] * N
+    for i in range(N):
+        vi = vec[i]
+        if vi == 0.0:
             continue
+        row = P[i]
+        for j in range(N):
+            res[j] += vi * row[j]
+    return res
 
-        pos = (pos + d1 + d2) % NUM_SQUARES
 
-        # G2J
-        if pos == G2J:
-            pos = JAIL
-        # Community Chest
-        elif pos in CC:
-            card = cc_deck[cc_index]
-            cc_index = (cc_index + 1) % len(cc_deck)
-            if card is not None:
-                pos = card
-        # Chance
-        elif pos in CH:
-            card = ch_deck[ch_index]
-            ch_index = (ch_index + 1) % len(ch_deck)
-            if card is not None:
-                if card == 'R':
-                    # Go to next R
-                    pos = next(r for r in R if r > pos) if any(r > pos for r in R) else R[0]
-                elif card == 'U':
-                    # Go to next U
-                    pos = next(u for u in U if u > pos) if any(u > pos for u in U) else U[0]
-                elif card == -3:
-                    pos = (pos - 3) % NUM_SQUARES
-                else:
-                    pos = card
+def solve_markov(eps=1e-14, max_iter=10000):
+    P = build_transition()
+    N = len(P)
+    # start at GO with 0 doubles
+    vec = [0.0] * N
+    vec[0 * 3 + 0] = 1.0
 
-        visits[pos] += 1
+    for _ in range(max_iter):
+        vec2 = multiply(vec, P)
+        diff = sum(abs(a - b) for a, b in zip(vec2, vec))
+        vec = vec2
+        if diff < eps:
+            break
 
-    # Find top 3 squares
-    top3 = [x[0] for x in visits.most_common(3)]
+    # marginalize over doubles count
+    pos_prob = [0.0] * NUM_SQUARES
+    for pos in range(NUM_SQUARES):
+        for dc in range(3):
+            pos_prob[pos] += vec[pos * 3 + dc]
+
+    # get top 3 squares
+    top3 = sorted(range(NUM_SQUARES), key=lambda x: -pos_prob[x])[:3]
     return ''.join(f"{x:02d}" for x in top3)
 
 
-if __name__ == "__main__":
-    print(simulate())
+if __name__ == '__main__':
+    print(solve_markov())
